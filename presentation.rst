@@ -291,6 +291,43 @@ Execution Control
 - ``continue``, ``step``, ``return``, ``next``, ``return``, ``until``:
   execution control
 
+Command: step (s)
+------------------
+
+- Execute the current line, then stop at the next execution point.
+
+- The next execution point is the first statement inside a function being
+  called or the next line of the current function.
+
+::
+
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  -> divide_one_by(0)
+  (Pdb) s
+  --Call--
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(1)divide_one_by()
+  -> def divide_one_by(divisor):
+  (Pdb) s
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  -> return 1/divisor
+
+Command: next (n)
+-----------------
+
+- Like ``step``, but does not enter functions called from statement being
+  executed.
+
+- "Skips" debugging function calls.
+
+:: 
+
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  -> divide_one_by(0)
+  (Pdb) n
+  ZeroDivisionError: 'integer division or modulo by zero'
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  -> divide_one_by(0)
+
 Frame Stack Control
 -------------------
 
@@ -305,19 +342,12 @@ Command: up (u)
     1  	def divide_one_by(divisor):
     2  	    import pdb; pdb.set_trace()
     3  ->	    return 1/divisor
-    4  	
-    5  	if __name__ == '__main__':
-    6  	    divide_one_by(0)
-    7  	    
-  [EOF]
+    ...
   (Pdb) u
   > /home/chrism/projects/pycon/2012/pdb/buggy.py(6)<module>()
   -> divide_one_by(0)
   (Pdb) l
-    1  	def divide_one_by(divisor):
-    2  	    import pdb; pdb.set_trace()
-    3  	    return 1/divisor
-    4  	
+    ...
     5  	if __name__ == '__main__':
     6  ->	    divide_one_by(0)
     7  	    
@@ -328,14 +358,10 @@ Command: down (d)
 ::
 
   (Pdb) l
-    1  	def divide_one_by(divisor):
-    2  	    import pdb; pdb.set_trace()
-    3  	    return 1/divisor
-    4  	
+    ...
     5  	if __name__ == '__main__':
     6  ->	    divide_one_by(0)
     7  	    
-  [EOF]
   (Pdb) d
   > /home/chrism/projects/pycon/2012/pdb/buggy.py(3)divide_one_by()
   -> return 1/divisor
@@ -343,11 +369,7 @@ Command: down (d)
     1  	def divide_one_by(divisor):
     2  	    import pdb; pdb.set_trace()
     3  ->	    return 1/divisor
-    4  	
-    5  	if __name__ == '__main__':
-    6  	    divide_one_by(0)
-    7  	    
-  [EOF]
+    ...
 
 
 Modifying Variables
