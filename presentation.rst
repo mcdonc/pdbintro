@@ -197,6 +197,8 @@ Where Am I?
 Command: list (l)
 ------------------
 
+``->`` next to the line that will execute next.
+
 ::
 
   [chrism@thinko pdb]$ ../env27/bin/python buggy.py
@@ -210,6 +212,8 @@ Command: list (l)
 
 Command: where (w)
 ------------------
+
+Where in the frame stack am I?  Read like a traceback.
 
 ::
 
@@ -279,17 +283,10 @@ Prints argument values passed to the current function.
   (Pdb) a
   divisor = 0
 
-
-commands
---------
-
-- scripting pdb
-
 Execution Control
 -----------------
 
-- ``continue``, ``step``, ``return``, ``next``, ``return``, ``until``:
-  execution control
+- ``step``, ``next``, ``continue``, ``until``, ``return``
 
 Command: step (s)
 ------------------
@@ -327,6 +324,53 @@ Command: next (n)
   ZeroDivisionError: 'integer division or modulo by zero'
   > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
   -> divide_one_by(0)
+
+Command: continue (c)
+---------------------
+
+- Continue until the next breakpoint.
+
+- If no breakpoint exists, continue until exit or uncaught exception is
+  raised.
+
+::
+
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced.py(3)divide_one_by()
+  -> return 1/divisor
+  (Pdb) c
+  Traceback (most recent call last):
+    File "buggy_traced.py", line 6, in <module>
+      divide_one_by(0)
+    File "buggy_traced.py", line 3, in divide_one_by
+      return 1/divisor
+  ZeroDivisionError: integer division or modulo by zero
+
+Command: until
+--------------
+
+- Like ``next`` but explicitly continues until execution reaches a line in
+  the same function with a line number higher than the current one.
+
+-  Basically "step past the end of the current loop".
+
+Command: return (r)
+-------------------
+
+Continues executing until current function is about to execute a ``return``
+statement then pauses.
+
+::
+
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced.py(3)divide_one_by()
+  -> return 1/divisor
+  (Pdb) r
+  --Return--
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced.py(3)divide_one_by()->None
+  -> return 1/divisor
+  (Pdb) l
+    1  	def divide_one_by(divisor):
+    2  	    import pdb; pdb.set_trace()
+    3  ->	    return 1/divisor
 
 Frame Stack Control
 -------------------
@@ -394,8 +438,199 @@ Modifying Variables
 Breakpoints
 -----------
 
+- ``set_trace`` is great to drop you into pdb, but you can also use
+  *breakpoints* to spell a condition about where else to stop in advance of
+  actually executing.
+
+- When breakpoint is reached, the program is paused before the line
+  identified by the breakpoint is executed.
+
 - ``break``, ``tbreak``, ``ignore``, ``enable``, ``disable``, and
-  ``clear``: Managing breakpoints
+  ``clear``
+
+Command: break <lineno>
+------------------------
+
+- break <lineno>
+
+- Stops execution at lineno.
+
+::
+
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  -> divide_one_by(0)
+  (Pdb) break 2
+  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  (Pdb) c
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  -> return 1/divisor
+
+Command: break <funcname>
+-------------------------
+
+- break <funcname>
+
+- Stops execution withinin function funcname.
+
+::
+
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  -> divide_one_by(0)
+  (Pdb) break divide_one_by
+  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:1
+  (Pdb) c
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  -> return 1/divisor
+  (Pdb) 
+
+Command: break <filename:lineno>
+--------------------------------
+
+- break <filename:lineno>
+
+- Can be full path to source file, relative path, or file available on
+  sys.path.
+
+::
+
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  -> divide_one_by(0)
+  (Pdb) break buggy.py:2
+  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:1
+  (Pdb) c
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  -> return 1/divisor
+  (Pdb) 
+
+Command: break
+--------------------------------
+
+- Lists current breakpoints.
+
+::
+
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  -> divide_one_by(0)
+  (Pdb) break 2
+  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  (Pdb) break
+  Num Type         Disp Enb   Where
+  1   breakpoint   keep yes   at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  (Pdb) 
+
+
+Command: disable
+--------------------------------
+
+- Disables a breakpoint by number
+
+::
+
+  (Pdb) disable 1
+  (Pdb) break
+  Num Type         Disp Enb   Where
+  1   breakpoint   keep no    at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+
+Command: enable
+-----------------
+
+- Reenables a disabled breakpoint.
+
+::
+
+  (Pdb) enable 1
+  (Pdb) break
+  Num Type         Disp Enb   Where
+  1   breakpoint   keep yes    at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+
+Command: clear
+-----------------
+
+- Removes a breakpoint entirely
+
+::
+
+  (Pdb) clear 1
+  Deleted breakpoint 1
+  (Pdb) break
+  (Pdb) 
+
+Command: tbreak
+-----------------
+
+- A breakpoint which is cleared whenever it is hit the first time.
+
+
+::
+
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  -> divide_one_by(0)
+  (Pdb) tbreak 2
+  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  (Pdb) c
+  Deleted breakpoint 1
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  -> return 1/divisor
+  (Pdb) break
+  (Pdb) 
+
+Command: break <lineno>, <condition>
+------------------------------------
+
+- Stops execution at lineno if <condition is true>
+
+::
+
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  -> divide_one_by(0)
+  (Pdb) break 2, divisor==0
+  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  (Pdb) c
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  -> return 1/divisor
+  (Pdb) 
+  (Pdb) break
+  Num Type         Disp Enb   Where
+  1   breakpoint   keep yes   at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+	stop only if divisor==0
+
+Command: ignore
+----------------
+
+- Ignore the next N iterations through a breakpoint.
+
+::
+
+  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  -> divide_one_by(0)
+  (Pdb) break 2
+  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  (Pdb) ignore 1 1
+  Will ignore next 1 crossing of breakpoint 1.
+  (Pdb) c
+  Traceback (most recent call last):
+    File "buggy_traced_main.py", line 6, in <module>
+      divide_one_by(0)
+    File "buggy_traced_main.py", line 2, in divide_one_by
+      return 1/divisor
+  ZeroDivisionError: integer division or modulo by zero
+  ...
+
+Advanced
+--------
+
+``commands``
+
+  define a series of commands to be executed when a breakpoint is hit.
+
+``jump``
+
+  alter program flow at runtime without modifying code
+
+``run``
+
+  restart the program from the beginning explicitly without losing
+  breakpoints or other settings.
 
 Debug
 -----
@@ -409,8 +644,6 @@ Aspects
   current program state.
 
 - Getting help
-
-
 
 PDB and Threads
 ---------------
