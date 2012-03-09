@@ -58,7 +58,7 @@ Script Mode
 ::
 
   [chrism@thinko pdb]$ ../env27/bin/python -m pdb buggy.py 
-  > /home/chrism/projects/pycon/2012/pdb/buggy.py(1)<module>()
+  > buggy.py(1)<module>()
   -> def divide_one_by(divisor):
 
 Enhanced Script Mode (Py 3.2+)
@@ -75,7 +75,7 @@ Enhanced Script Mode (Py 3.2+)
  ...
  ZeroDivisionError: division by zero
  ...
- > /home/chrism/projects/pycon/2012/pdb/buggy.py(2)divide_one_by()
+ > buggy.py(2)divide_one_by()
  -> return 1/divisor
  (Pdb) 
 
@@ -89,7 +89,7 @@ Enhanced Script Mode (Py 3.2+)
 ::
 
  [chrism@thinko pdb]$ ../env32/bin/python -m pdb -c 'until 2' buggy.py 
- > /home/chrism/projects/pycon/2012/pdb/buggy.py(4)<module>()
+ > buggy.py(4)<module>()
  -> if __name__ == '__main__':
  (Pdb)
 
@@ -110,7 +110,7 @@ Postmortem Mode
     ...
   ZeroDivisionError: integer division or modulo by zero
   >>> import pdb; pdb.pm()
-  > /home/chrism/projects/pycon/2012/pdb/buggy.py(2)divide_one_by()
+  > buggy.py(2)divide_one_by()
   -> return 1/divisor
   (Pdb)
 
@@ -145,35 +145,6 @@ Trace Mode
       import pdb; pdb.set_trace()
       return 1/divisor
 
-PDB Aliases
------------
-
-``alias ph !help(%1)``
-
-  ``ph <someobject>`` prints help about the object
-
-``alias pl pp list(locals().keys())``
-
-   ``pl`` pretty-prints a list of the names local to the frame.
-
-``%`` args are positional starting at 1; to consume all use ``%*``.
-
-.pdbrc File
------------
-
-- Can live in the current directory or in your home directory.  If both
-  exist, home directory directory values are executed, then current directory
-  values.
-
-- Almost any pdb command can be executed, but .pdbrc is most useful to define
-  aliases.
-
-::
-
-  [chrism@thinko pdb]$ cat ~/.pdbrc 
-  alias ph !help(%1)
-  alias pl pp list(locals().keys())
-
 Command Language
 ----------------
 
@@ -186,6 +157,25 @@ Command Language
   operation).
 
 - Full command name or its shortened version can be used at ``(Pdb)`` prompt.
+
+- Exceptions generated when a pdb expression generates an exception don't
+  impact current program state.
+
+Help
+----
+
+::
+
+  (Pdb) h
+
+  Documented commands (type help <topic>):
+  ========================================
+  EOF    bt         cont      enable  jump  pp       run      unt   
+  a      c          continue  exit    l     q        s        until 
+  alias  cl         d         h       list  quit     step     up    
+  args   clear      debug     help    n     r        tbreak   w     
+  b      commands   disable   ignore  next  restart  u        whatis
+  break  condition  down      j       p     return   unalias  where 
 
 Where Am I?
 -----------
@@ -202,7 +192,7 @@ Command: list (l)
 ::
 
   [chrism@thinko pdb]$ ../env27/bin/python buggy.py
-  > /home/chrism/projects/pycon/2012/pdb/buggy.py(3)divide_one_by()
+  > buggy.py(3)divide_one_by()
   -> return 1/divisor
   (Pdb) l
     1  	def divide_one_by(divisor):
@@ -218,12 +208,12 @@ Where in the frame stack am I?  Read like a traceback.
 ::
 
   [chrism@thinko pdb]$ ../env27/bin/python buggy.py
-  > /home/chrism/projects/pycon/2012/pdb/buggy.py(3)divide_one_by()
+  > buggy.py(3)divide_one_by()
   -> return 1/divisor
   (Pdb) w
-    /home/chrism/projects/pycon/2012/pdb/buggy.py(6)<module>()
+    buggy.py(6)<module>()
   -> divide_one_by(0)
-  > /home/chrism/projects/pycon/2012/pdb/buggy.py(3)divide_one_by()
+  > buggy.py(3)divide_one_by()
   -> return 1/divisor
   (Pdb) 
 
@@ -240,7 +230,7 @@ Command: print (p)
 ::
 
   [chrism@thinko pdb]$ ../env27/bin/python buggy.py
-  > /home/chrism/projects/pycon/2012/pdb/buggy.py(3)divide_one_by()
+  > buggy.py(3)divide_one_by()
   -> return 1/divisor
   (Pdb) p divisor
   0
@@ -278,7 +268,7 @@ Prints argument values passed to the current function.
 ::
 
   [chrism@thinko pdb]$ ../env27/bin/python buggy.py
-  > /home/chrism/projects/pycon/2012/pdb/buggy.py(3)divide_one_by()
+  > buggy.py(3)divide_one_by()
   -> return 1/divisor
   (Pdb) a
   divisor = 0
@@ -298,14 +288,14 @@ Command: step (s)
 
 ::
 
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  > buggy_traced_main.py(6)<module>()
   -> divide_one_by(0)
   (Pdb) s
   --Call--
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(1)divide_one_by()
+  > buggy_traced_main.py(1)divide_one_by()
   -> def divide_one_by(divisor):
   (Pdb) s
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  > buggy_traced_main.py(2)divide_one_by()
   -> return 1/divisor
 
 Command: next (n)
@@ -318,11 +308,11 @@ Command: next (n)
 
 :: 
 
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  > buggy_traced_main.py(6)<module>()
   -> divide_one_by(0)
   (Pdb) n
   ZeroDivisionError: 'integer division or modulo by zero'
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  > buggy_traced_main.py(6)<module>()
   -> divide_one_by(0)
 
 Command: continue (c)
@@ -335,7 +325,7 @@ Command: continue (c)
 
 ::
 
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced.py(3)divide_one_by()
+  > buggy_traced.py(3)divide_one_by()
   -> return 1/divisor
   (Pdb) c
   Traceback (most recent call last):
@@ -361,11 +351,11 @@ statement then pauses.
 
 ::
 
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced.py(3)divide_one_by()
+  > buggy_traced.py(3)divide_one_by()
   -> return 1/divisor
   (Pdb) r
   --Return--
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced.py(3)divide_one_by()->None
+  > buggy_traced.py(3)divide_one_by()->None
   -> return 1/divisor
   (Pdb) l
     1  	def divide_one_by(divisor):
@@ -388,7 +378,7 @@ Command: up (u)
     3  ->	    return 1/divisor
     ...
   (Pdb) u
-  > /home/chrism/projects/pycon/2012/pdb/buggy.py(6)<module>()
+  > buggy.py(6)<module>()
   -> divide_one_by(0)
   (Pdb) l
     ...
@@ -407,7 +397,7 @@ Command: down (d)
     6  ->	    divide_one_by(0)
     7  	    
   (Pdb) d
-  > /home/chrism/projects/pycon/2012/pdb/buggy.py(3)divide_one_by()
+  > buggy.py(3)divide_one_by()
   -> return 1/divisor
   (Pdb) l
     1  	def divide_one_by(divisor):
@@ -425,7 +415,7 @@ Modifying Variables
 ::
 
   [chrism@thinko pdb]$ ../env27/bin/python buggy.py
-  > /home/chrism/projects/pycon/2012/pdb/buggy.py(3)divide_one_by()
+  > buggy.py(3)divide_one_by()
   -> return 1/divisor
   (Pdb) p divisor
   0
@@ -457,12 +447,12 @@ Command: break <lineno>
 
 ::
 
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  > buggy_traced_main.py(6)<module>()
   -> divide_one_by(0)
   (Pdb) break 2
-  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  Breakpoint 1 at buggy_traced_main.py:2
   (Pdb) c
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  > buggy_traced_main.py(2)divide_one_by()
   -> return 1/divisor
 
 Command: break <funcname>
@@ -474,31 +464,29 @@ Command: break <funcname>
 
 ::
 
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  > buggy_traced_main.py(6)<module>()
   -> divide_one_by(0)
   (Pdb) break divide_one_by
-  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:1
+  Breakpoint 1 at buggy_traced_main.py:1
   (Pdb) c
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  > buggy_traced_main.py(2)divide_one_by()
   -> return 1/divisor
   (Pdb) 
 
-Command: break <filename:lineno>
---------------------------------
-
-- break <filename:lineno>
+Command: break <fn:line>
+--------------------------
 
 - Can be full path to source file, relative path, or file available on
   sys.path.
 
 ::
 
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  > buggy_traced_main.py(6)<module>()
   -> divide_one_by(0)
   (Pdb) break buggy.py:2
-  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:1
+  Breakpoint 1 at buggy_traced_main.py:1
   (Pdb) c
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  > buggy_traced_main.py(2)divide_one_by()
   -> return 1/divisor
   (Pdb) 
 
@@ -509,13 +497,13 @@ Command: break
 
 ::
 
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  > buggy_traced_main.py(6)<module>()
   -> divide_one_by(0)
   (Pdb) break 2
-  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  Breakpoint 1 at buggy_traced_main.py:2
   (Pdb) break
   Num Type         Disp Enb   Where
-  1   breakpoint   keep yes   at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  1   breakpoint   keep yes   at buggy_traced_main.py:2
   (Pdb) 
 
 
@@ -529,7 +517,7 @@ Command: disable
   (Pdb) disable 1
   (Pdb) break
   Num Type         Disp Enb   Where
-  1   breakpoint   keep no    at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  1   breakpoint   keep no    at buggy_traced_main.py:2
 
 Command: enable
 -----------------
@@ -541,7 +529,7 @@ Command: enable
   (Pdb) enable 1
   (Pdb) break
   Num Type         Disp Enb   Where
-  1   breakpoint   keep yes    at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  1   breakpoint   keep yes    at buggy_traced_main.py:2
 
 Command: clear
 -----------------
@@ -563,35 +551,35 @@ Command: tbreak
 
 ::
 
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  > buggy_traced_main.py(6)<module>()
   -> divide_one_by(0)
   (Pdb) tbreak 2
-  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  Breakpoint 1 at buggy_traced_main.py:2
   (Pdb) c
   Deleted breakpoint 1
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  > buggy_traced_main.py(2)divide_one_by()
   -> return 1/divisor
   (Pdb) break
   (Pdb) 
 
-Command: break <lineno>, <condition>
-------------------------------------
+Command: break <line>,<cond>
+----------------------------
 
 - Stops execution at lineno if <condition is true>
 
 ::
 
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  > buggy_traced_main.py(6)<module>()
   -> divide_one_by(0)
   (Pdb) break 2, divisor==0
-  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  Breakpoint 1 at buggy_traced_main.py:2
   (Pdb) c
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(2)divide_one_by()
+  > buggy_traced_main.py(2)divide_one_by()
   -> return 1/divisor
   (Pdb) 
   (Pdb) break
   Num Type         Disp Enb   Where
-  1   breakpoint   keep yes   at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  1   breakpoint   keep yes   at buggy_traced_main.py:2
 	stop only if divisor==0
 
 Command: ignore
@@ -601,10 +589,10 @@ Command: ignore
 
 ::
 
-  > /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py(6)<module>()
+  > buggy_traced_main.py(6)<module>()
   -> divide_one_by(0)
   (Pdb) break 2
-  Breakpoint 1 at /home/chrism/projects/pycon/2012/pdb/buggy_traced_main.py:2
+  Breakpoint 1 at buggy_traced_main.py:2
   (Pdb) ignore 1 1
   Will ignore next 1 crossing of breakpoint 1.
   (Pdb) c
@@ -619,45 +607,58 @@ Command: ignore
 Advanced
 --------
 
-``commands``
+``commands`` -- define a series of commands to be executed when a breakpoint
+is hit.
 
-  define a series of commands to be executed when a breakpoint is hit.
+``jump`` -- alter program flow at runtime without modifying code
 
-``jump``
+``run`` -- restart the program from the beginning explicitly without losing
+breakpoints or other settings.
 
-  alter program flow at runtime without modifying code
+``debug`` -- recursively invoke the debugger using an expression
 
-``run``
+PDB Aliases
+-----------
 
-  restart the program from the beginning explicitly without losing
-  breakpoints or other settings.
+``alias ph !help(%1)``
 
-Debug
------
+  ``ph <someobject>`` prints help about the object
 
-- ``debug``: recursive debugging
+``alias pl pp list(locals().keys())``
 
-Aspects
--------
+   ``pl`` pretty-prints a list of the names local to the frame.
 
-- Exceptions generated when a pdb command generates an exception don't impact
-  current program state.
+``%`` args are positional starting at 1; to consume all use ``%*``.
 
-- Getting help
+.pdbrc File
+-----------
 
-PDB and Threads
----------------
+- Can live in the current directory or in your home directory.  If both
+  exist, home directory directory values are executed, then current directory
+  values.
 
-- Set thread count to 1
+- Almost any pdb command can be executed, but .pdbrc is most useful to define
+  aliases.
+
+::
+
+  [chrism@thinko pdb]$ cat ~/.pdbrc 
+  alias ph !help(%1)
+  alias pl pp list(locals().keys())
+
+PDB, Web Apps and Threads
+-------------------------
+
+- Set server thread count to 1
 
 Purple Bags
 -----------
 
-- Enhanced shells: ipdb, pudb, winpdb
+- Emacs ``pdbtrack``
 
-  - IPython:  ipdb, ipdb.set_trace()
+- Enhanced shells: ipdb, pudb, winpdb, pdb++
 
-- In-editor debugger integration (Wing, Eclipse PyDev, PyCharm, etc)
+- IDE debugger integration (Wing, Eclipse PyDev, PyCharm, etc)
 
 - pdb-pm-like environments (Django/Flask/Pyramid debug toolbar)
 
