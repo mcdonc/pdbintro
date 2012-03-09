@@ -13,11 +13,16 @@ What is PDB
 
 - Interactive shell.
 
-- Gives you a glimpse into the execution path of your code.
+- Gives you a glimpse into the execution path of your (and others'!) code.
 
 - Allows you to display and modify the state of variables during execution.
 
 - Allows you to execute expressions in the context of your code.
+
+- If you don't know how to use it, you will after this talk.
+
+- You can be a lot more self-sufficient if you know how to use PDB even a
+  little bit.
 
 When Should I Use It
 --------------------
@@ -25,6 +30,8 @@ When Should I Use It
 - "I don't use a debugger"
 
 - When is it really not reasonable?
+
+- Alternatives: print statements, logging.
 
 buggy.py
 --------
@@ -60,6 +67,7 @@ Script Mode
   [chrism@thinko pdb]$ ../env27/bin/python -m pdb buggy.py 
   > buggy.py(1)<module>()
   -> def divide_one_by(divisor):
+ (Pdb) 
 
 Enhanced Script Mode (Py 3.2+)
 -----------------------------------
@@ -177,6 +185,10 @@ Help
   b      commands   disable   ignore  next  restart  u        whatis
   break  condition  down      j       p     return   unalias  where 
 
+http://blog.doughellmann.com/2010/09/pymotw-pdb-interactive-debugger.html
+
+(Google for "hellmann pdb")
+
 Where Am I?
 -----------
 
@@ -187,7 +199,7 @@ Where Am I?
 Command: list (l)
 ------------------
 
-``->`` next to the line that will execute next.
+``->`` shown beside the line that will execute next.
 
 ::
 
