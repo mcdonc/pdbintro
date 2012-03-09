@@ -436,6 +436,12 @@ Modifying Variables
   1
   (Pdb) n
 
+You Can Leave Now
+-----------------
+
+- The commands we've already covered will go a long, long way.
+
+- The rest of the commands are useful but not *critical*.
 
 Breakpoints
 -----------
